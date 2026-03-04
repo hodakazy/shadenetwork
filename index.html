@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shade Network — Minecraft Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lime: #ffd800;
+      --lime-dim: #c8d94e;
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #161616;
+      --bg4: #1e1e1e;
+      --border: rgba(255,216,0,0.1);
+      --border2: rgba(255,255,255,0.07);
+      --text: #efefef;
+      --muted: #777;
+      --muted2: #aaa;
+      --radius: 8px;
+      --max: 1160px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 2px; }
+
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 52px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 60px; background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 52px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+      letter-spacing: 4px; color: var(--lime); text-decoration: none;
+    }
+    .nav-logo em { color: rgba(255,255,255,0.35); font-style: normal; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 12px;
+      font-weight: 500; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-cta {
+      background: var(--lime); color: #000; border: none;
+      padding: 8px 20px; border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 12px; letter-spacing: 0.5px; cursor: pointer;
+      transition: transform 0.15s, opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden;
+      padding: 120px 52px 80px;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,216,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,216,0,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 20%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute; top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1000px; height: 700px;
+      background: radial-gradient(ellipse at center, rgba(255,216,0,0.065) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 900px; width: 100%; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,216,0,0.07); border: 1px solid rgba(255,216,0,0.2);
+      color: var(--lime); font-family: 'Space Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; padding: 6px 16px;
+      border-radius: 100px; margin-bottom: 36px;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 5px; height: 5px;
+      background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(84px, 13.5vw, 172px);
+      line-height: 0.87; letter-spacing: 3px; color: var(--text);
+    }
+    .hero-title .acc { color: var(--lime); display: block; }
+
+    .hero-sub {
+      margin: 28px auto 0;
+      font-size: 17px; color: var(--muted2); line-height: 1.65;
+      font-weight: 300; max-width: 520px;
+    }
+
+    .hero-btns {
+      margin-top: 40px; display: flex; gap: 12px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--lime); color: #000; border: none;
+      padding: 13px 30px; border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      cursor: pointer; text-decoration: none; display: inline-block;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,216,0,0.22); }
+    .btn-ghost {
+      background: transparent; color: var(--muted2);
+      border: 1px solid var(--border2); padding: 13px 30px;
+      border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+      font-weight: 500; font-size: 14px; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,216,0,0.4); color: var(--lime); }
+
+    .hero-stats {
+      margin-top: 64px; display: flex; justify-content: center;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; max-width: 700px; margin-left: auto; margin-right: auto;
+    }
+    .hstat {
+      flex: 1; padding: 22px 28px; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .hstat:last-child { border-right: none; }
+    .hstat-n { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--lime); letter-spacing: 1px; line-height: 1; }
+    .hstat-l { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    /* ── SECTION BASE ── */
+    .section { padding: 108px 0; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-tag { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--lime); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(44px, 5.5vw, 76px); line-height: 0.95; letter-spacing: 1px; }
+    .section-title .acc { color: var(--lime); }
+    .section-lead { margin: 18px auto 0; font-size: 15px; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 480px; }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .about-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border2); border-radius: 14px; overflow: hidden;
+      background: var(--border2); gap: 1px;
+    }
+    .about-tile {
+      background: var(--bg3); padding: 40px 34px;
+      position: relative; overflow: hidden; transition: background 0.2s;
+    }
+    .about-tile:hover { background: var(--bg4); }
+    .about-tile::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--lime), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .about-tile:hover::after { opacity: 1; }
+    .tile-icon {
+      width: 38px; height: 38px; background: rgba(255,216,0,0.1);
+      border: 1px solid rgba(255,216,0,0.18); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; margin-bottom: 18px;
+    }
+    .about-tile h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--lime); margin-bottom: 10px; }
+    .about-tile p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .about-tile ul { margin-top: 14px; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .about-tile li { font-size: 13px; color: var(--muted); display: flex; gap: 8px; }
+    .about-tile li::before { content: '›'; color: var(--lime); flex-shrink: 0; }
+
+    /* ── GAME MODES ── */
+    #gamemodes { background: var(--bg); }
+
+    .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .mode-card {
+      background: var(--bg2); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 48px 44px; position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.25s;
+    }
+    .mode-card:hover { border-color: rgba(255,216,0,0.22); transform: translateY(-4px); }
+    .mode-card::after {
+      content: ''; position: absolute; bottom: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(255,216,0,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .mode-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      letter-spacing: 1.5px; padding: 5px 12px; border-radius: 100px;
+      margin-bottom: 28px; border: 1px solid;
+    }
+    .mode-status.live { color: var(--lime); border-color: rgba(255,216,0,0.25); background: rgba(255,216,0,0.06); }
+    .mode-status.live::before { content: ''; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite; }
+    .mode-status.soon { color: var(--muted); border-color: var(--border2); background: rgba(255,255,255,0.025); }
+
+    .mode-name { font-family: 'Bebas Neue', sans-serif; font-size: 60px; letter-spacing: 2px; line-height: 0.9; margin-bottom: 6px; }
+    .mode-name span { color: var(--lime); }
+    .mode-type { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 2px; margin-bottom: 22px; }
+    .mode-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+
+    .mode-features { display: flex; flex-direction: column; gap: 8px; }
+    .mf {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 10px 14px;
+      font-size: 13px; color: var(--muted2);
+    }
+    .mf-dot { width: 5px; height: 5px; background: var(--lime); border-radius: 50%; flex-shrink: 0; opacity: 0.7; }
+
+    .mode-launch {
+      margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border);
+      font-family: 'Space Mono', monospace; font-size: 11px;
+      color: var(--lime); letter-spacing: 1px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mode-launch::before { content: ''; width: 24px; height: 1px; background: var(--lime); opacity: 0.5; }
+
+    /* ── HOW TO JOIN ── */
+    #join { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .join-layout { display: grid; grid-template-columns: 1fr 400px; gap: 64px; align-items: start; }
+
+    .steps { display: flex; flex-direction: column; }
+    .step-row {
+      display: grid; grid-template-columns: 52px 1fr; gap: 20px;
+      padding: 28px 0; border-bottom: 1px solid var(--border);
+    }
+    .step-row:last-child { border-bottom: none; }
+    .step-n { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: rgba(255,216,0,0.13); line-height: 1; }
+    .step-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .step-body p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .step-body code { color: var(--lime); font-family: 'Space Mono', monospace; font-size: 12px; }
+
+    .server-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 14px; padding: 34px; position: sticky; top: 78px;
+    }
+    .server-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--lime); margin-bottom: 22px; }
+
+    .sfield {
+      background: var(--bg); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 13px 15px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 9px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .sfield:hover { border-color: rgba(255,216,0,0.3); }
+    .sfield-label { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; letter-spacing: 1px; margin-bottom: 4px; }
+    .sfield-val { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--lime); }
+    .sfield-val.neutral { color: var(--muted2); }
+    .copy-btn {
+      font-size: 9px; color: var(--muted); background: rgba(255,255,255,0.05);
+      border: none; border-radius: 4px; padding: 4px 8px;
+      cursor: pointer; font-family: 'Space Mono', monospace; letter-spacing: 0.5px;
+      transition: color 0.2s; flex-shrink: 0;
+    }
+    .copy-btn:hover { color: var(--lime); }
+
+    .server-note { font-size: 12px; color: var(--muted); line-height: 1.65; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .server-note strong { color: var(--muted2); }
+
+    .join-discord-btn {
+      display: block; width: 100%; margin-top: 16px;
+      background: var(--lime); color: #000; border: none;
+      padding: 13px; border-radius: var(--radius); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 13px;
+      text-align: center; text-decoration: none; transition: opacity 0.2s, transform 0.15s;
+    }
+    .join-discord-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── COMMUNITY ── */
+    #community { background: var(--bg); }
+
+    .community-band {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 68px 72px;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 72px; align-items: center; position: relative; overflow: hidden;
+    }
+    .community-band::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--lime);
+    }
+    .community-band::after {
+      content: ''; position: absolute; right: -80px; top: -80px;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(255,216,0,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .community-h {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 4vw, 58px);
+      letter-spacing: 1px; line-height: 1; margin-bottom: 16px;
+    }
+    .community-p { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 460px; }
+    .community-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+    .chip {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border2);
+      color: var(--muted); font-size: 11px; padding: 5px 12px;
+      border-radius: 100px; font-family: 'Space Mono', monospace; letter-spacing: 0.5px;
+    }
+
+    .discord-cta {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      background: #5865F2; color: #fff; border: none;
+      padding: 24px 38px; border-radius: 14px; cursor: pointer;
+      text-decoration: none; font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 15px; white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.2s; position: relative; z-index: 1;
+    }
+    .discord-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(88,101,242,0.4); }
+    .discord-cta svg { width: 32px; height: 32px; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 34px 0; }
+    .footer-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 52px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 4px; color: var(--lime); }
+    .footer-links { display: flex; gap: 26px; }
+    .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--lime); }
+    .footer-copy { font-size: 11px; color: var(--muted); }
+
+    /* ── AI FAB ── */
+    .ai-fab {
+      position: fixed; bottom: 28px; right: 28px; z-index: 600;
+      width: 52px; height: 52px; background: var(--lime); border: none;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 22px rgba(255,216,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fabIn 0.5s ease 1.2s both;
+    }
+    @keyframes fabIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    .ai-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(255,216,0,0.45); }
+    .ai-fab svg { width: 22px; height: 22px; color: #000; }
+    .fab-tip {
+      position: absolute; right: 62px; top: 50%; transform: translateY(-50%) translateX(4px);
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-size: 12px; font-weight: 500;
+      padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .ai-fab:hover .fab-tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+    /* ── AI PANEL ── */
+    .ai-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px); z-index: 700;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .ai-overlay.open { opacity: 1; pointer-events: all; }
+
+    .ai-panel {
+      position: fixed; bottom: 0; right: 0;
+      width: 420px; height: 600px; background: var(--bg2);
+      border-left: 1px solid rgba(255,216,0,0.15);
+      border-top: 1px solid rgba(255,216,0,0.15);
+      border-radius: 16px 0 0 0; z-index: 800;
+      display: flex; flex-direction: column;
+      transform: translateY(110%);
+      transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden;
+    }
+    .ai-panel.open { transform: translateY(0); }
+
+    .ai-head {
+      padding: 15px 18px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; background: var(--bg3);
+    }
+    .ai-head-l { display: flex; align-items: center; gap: 10px; }
+    .ai-ava {
+      width: 32px; height: 32px; background: var(--lime); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+    .ai-name { font-size: 14px; font-weight: 600; }
+    .ai-online {
+      font-size: 10px; color: var(--lime); font-family: 'Space Mono', monospace;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .ai-online::before { content: ''; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite; }
+    .ai-x { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px; transition: color 0.2s; }
+    .ai-x:hover { color: var(--text); }
+
+    .ai-msgs {
+      flex: 1; overflow-y: auto; padding: 18px;
+      display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
+    }
+    .ai-msgs::-webkit-scrollbar { width: 2px; }
+    .ai-msgs::-webkit-scrollbar-thumb { background: var(--border2); }
+
+    .msg { display: flex; gap: 8px; max-width: 90%; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-ava {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--bg4); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; flex-shrink: 0;
+    }
+    .msg.ai .msg-ava { background: rgba(255,216,0,0.12); }
+    .msg-bub {
+      background: var(--bg4); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 10px 13px;
+      font-size: 13px; line-height: 1.55; color: var(--text);
+    }
+    .msg.user .msg-bub { background: rgba(255,216,0,0.08); border-color: rgba(255,216,0,0.18); }
+    .msg-bub b { color: var(--lime); }
+
+    .typing { display: flex; gap: 4px; align-items: center; padding: 2px 0; }
+    .typing span { width: 6px; height: 6px; background: var(--lime); border-radius: 50%; animation: tdot 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes tdot { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-5px);opacity:1} }
+
+    .ai-chips { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+    .ai-chip {
+      background: var(--bg3); border: 1px solid var(--border2); color: var(--muted);
+      font-size: 11px; padding: 5px 10px; border-radius: 100px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: color 0.2s, border-color 0.2s;
+    }
+    .ai-chip:hover { color: var(--lime); border-color: rgba(255,216,0,0.3); }
+
+    .ai-input-row {
+      padding: 12px 14px; border-top: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: center;
+      flex-shrink: 0; background: var(--bg3);
+    }
+    .ai-inp {
+      flex: 1; background: var(--bg4); border: 1px solid var(--border2);
+      border-radius: 8px; color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; padding: 10px 13px; outline: none; transition: border-color 0.2s;
+    }
+    .ai-inp:focus { border-color: rgba(255,216,0,0.35); }
+    .ai-inp::placeholder { color: var(--muted); }
+    .ai-go {
+      width: 36px; height: 36px; background: var(--lime); border: none;
+      border-radius: 8px; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; transition: transform 0.15s, opacity 0.2s;
+    }
+    .ai-go:hover { transform: scale(1.07); opacity: 0.88; }
+    .ai-go svg { width: 15px; height: 15px; color: #000; }
+
+    /* ── SCROLL ANIM ── */
+    .fi { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fi.in { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .about-grid { grid-template-columns: 1fr 1fr; }
+      .about-tile:nth-child(3) { grid-column: span 2; }
+    }
+    @media (max-width: 860px) {
+      .container, .nav-inner, .footer-inner { padding: 0 24px; }
+      .nav-links { display: none; }
+      .section { padding: 72px 0; }
+      #home { padding: 100px 24px 64px; }
+      .modes-grid, .join-layout { grid-template-columns: 1fr; gap: 24px; }
+      .community-band { grid-template-columns: 1fr; padding: 40px 32px; gap: 36px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-tile:nth-child(3) { grid-column: auto; }
+      .hero-stats { flex-direction: column; }
+      .hstat { border-right: none; border-bottom: 1px solid var(--border); }
+      .hstat:last-child { border-bottom: none; }
+      .ai-panel { width: 100%; border-radius: 16px 16px 0 0; }
+      .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+      .footer-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">SHADE<em>NET</em></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#gamemodes">Game Modes</a></li>
+      <li><a href="#join">How to Join</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="shop.html" style="color:var(--lime);">Shop</a></li>
+    </ul>
+    <button class="nav-cta" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">Join Now</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content fi">
+    <div class="hero-eyebrow">Now in Development &nbsp;·&nbsp; Launching 2026</div>
+    <h1 class="hero-title">SHADE<span class="acc">NETWORK</span></h1>
+    <p class="hero-sub">A Minecraft server community built for players who want real stakes. Two game modes. One world. Under the Look'around brand.</p>
+    <div class="hero-btns">
+      <a href="#join" class="btn-primary">How to Join</a>
+      <a href="https://discord.gg/USsSyWtJ" target="_blank" class="btn-ghost">Join Discord</a>
+      <button class="btn-ghost" onclick="togglePanel()">Ask ShadeBot ↗</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Game Modes</div></div>
+      <div class="hstat"><div class="hstat-n">1.21</div><div class="hstat-l">MC Version</div></div>
+      <div class="hstat"><div class="hstat-n">MAR '26</div><div class="hstat-l">SMP Launch</div></div>
+      <div class="hstat"><div class="hstat-n">JUN '26</div><div class="hstat-l">FFA Launch</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="section-header fi">
+      <div class="section-tag">// About the Network</div>
+      <h2 class="section-title">WHAT IS <span class="acc">SHADE?</span></h2>
+      <p class="section-lead">No land claiming. No teleporting. Real consequences. Shade Network is Minecraft the way it was meant to be played.</p>
+    </div>
+    <div class="about-grid fi">
+      <div class="about-tile">
+        <div class="tile-icon">🌐</div>
+        <h3>The Network</h3>
+        <p>Built under the Look'around brand, running on Paper 1.21.11 with cross-version support back to 1.16.</p>
+        <ul>
+          <li>Vanilla, Fabric, Forge, OptiFine — all clients welcome</li>
+          <li>Cross-version: 1.16 to 1.21.11</li>
+          <li>Built-in economy with structured shop</li>
+        </ul>
+      </div>
+      <div class="about-tile">
+        <div class="tile-icon">⚔️</div>
+        <h3>The Philosophy</h3>
+        <p>Risk is intentional. Your base can be raided. You walk your own distances. Every interaction carries weight.</p>
+        <ul>
+          <li>No land claiming or TPA features</li>
+          <li>Real consequences for every decision</li>
+          <li>New SMP chapter every 1–2 months</li>
+        </ul>
+      </div>
+      <div class="about-tile">
+        <div class="tile-icon">📋</div>
+        <h3>The Community</h3>
+        <p>Rules, sell lists, staff applications, and announcements all live in Discord — your off-server home base.</p>
+        <ul>
+          <li>Type <code style="color:var(--lime);font-size:11px">/rules</code> in-game or read in Discord</li>
+          <li>Staff applications via Discord ticket</li>
+          <li>Earn money selling items or bounty hunting</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME MODES -->
+<section id="gamemodes" class="section">
+  <div class="container">
+    <div class="section-header fi">
+      <div class="section-tag">// Game Modes</div>
+      <h2 class="section-title">TWO MODES. <span class="acc">ONE WORLD.</span></h2>
+      <p class="section-lead">Each mode is built from scratch for a different playstyle. Pick your lane.</p>
+    </div>
+    <div class="modes-grid">
+      <div class="mode-card fi">
+        <div class="mode-status live">Coming next month!</div>
+        <div class="mode-name">SHADE <span>SMP</span></div>
+        <div class="mode-type">Semi-Vanilla Survival</div>
+        <p class="mode-desc">Build, trade, and hunt in a living world with a player-driven economy, bounty system, and rotating chapter seasons that add new content every few months.</p>
+        <div class="mode-features">
+          <div class="mf"><span class="mf-dot"></span>Shop with Food, Gear &amp; Utility categories</div>
+          <div class="mf"><span class="mf-dot"></span>Player bounty system — set targets, collect rewards</div>
+          <div class="mf"><span class="mf-dot"></span>New chapter every 1–2 months with added items</div>
+          <div class="mf"><span class="mf-dot"></span>Earn currency selling items or bounty hunting</div>
+          <div class="mf"><span class="mf-dot"></span>No land claiming — defend your own base</div>
+        </div>
+        <div class="mode-launch">31st March 2026</div>
+      </div>
+      <div class="mode-card fi">
+        <div class="mode-status soon">Launching Early June 2026</div>
+        <div class="mode-name">SHADE <span>FFA</span></div>
+        <div class="mode-type">Free-For-All Combat</div>
+        <p class="mode-desc">Drop into a live pit of fighters. Every kill upgrades your gear tier. Every death costs you one. High risk, high reward — pure, unfiltered PvP.</p>
+        <div class="mode-features">
+          <div class="mf"><span class="mf-dot"></span>Dynamic gear tier — +1 per kill, −1 per death</div>
+          <div class="mf"><span class="mf-dot"></span>Die and respawn at spawn with downgraded gear</div>
+          <div class="mf"><span class="mf-dot"></span><code style="color:var(--lime);font-size:11px">/spawn</code> after 5s out of combat to leave safely</div>
+          <div class="mf"><span class="mf-dot"></span>Reset gear to your current tier at spawn anytime</div>
+          <div class="mf"><span class="mf-dot"></span>Drop in and fight — no setup, no waiting</div>
+        </div>
+        <div class="mode-launch">June 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO JOIN -->
+<section id="join" class="section">
+  <div class="container">
+    <div class="section-header fi">
+      <div class="section-tag">// How to Join</div>
+      <h2 class="section-title">GET IN <span class="acc">THE GAME</span></h2>
+      <p class="section-lead">Four steps and you're in.</p>
+    </div>
+    <div class="join-layout">
+      <div class="steps fi">
+        <div class="step-row">
+          <div class="step-n">01</div>
+          <div class="step-body">
+            <h4>Get Minecraft Java Edition</h4>
+            <p>You'll need Minecraft Java Edition. Any version from 1.16 to 1.21.11 works, but we strongly recommend 1.21.11 for the best experience.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-n">02</div>
+          <div class="step-body">
+            <h4>Choose Your Client</h4>
+            <p>All clients are supported — Vanilla, Fabric, Forge, OptiFine, and more. Use whatever you're already on.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-n">03</div>
+          <div class="step-body">
+            <h4>Add the Server IP</h4>
+            <p>Open Minecraft → Multiplayer → Add Server. Paste the IP from the panel on the right, save, and connect.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-n">04</div>
+          <div class="step-body">
+            <h4>Know the Rules</h4>
+            <p>Run <code>/rules</code> in chat or read them in Discord before you play. Ignorance isn't an excuse on Shade Network.</p>
+          </div>
+        </div>
+      </div>
+      <div class="server-card fi">
+        <div class="server-card-title">Server Details</div>
+        <div class="sfield" onclick="copyField('play.shadenetwork.net', this)">
+          <div><div class="sfield-label">Server IP</div><div class="sfield-val">play.shadenetwork.net</div></div>
+          <button class="copy-btn">COPY</button>
+        </div>
+        <div class="sfield" onclick="copyField('1.21.11', this)">
+          <div><div class="sfield-label">Recommended Version</div><div class="sfield-val">1.21.11</div></div>
+          <button class="copy-btn">COPY</button>
+        </div>
+        <div class="sfield">
+          <div><div class="sfield-label">Server Software</div><div class="sfield-val neutral">Paper 1.21.11</div></div>
+        </div>
+        <div class="sfield">
+          <div><div class="sfield-label">Version Support</div><div class="sfield-val neutral">1.16 → 1.21.11</div></div>
+        </div>
+        <p class="server-note"><strong>Server is in development.</strong> Join the Discord to be notified at launch and stay up to date on progress.</p>
+        <a href="https://discord.gg/USsSyWtJ" target="_blank" class="join-discord-btn">Join Discord for Updates</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community" class="section">
+  <div class="container">
+    <div class="section-header fi">
+      <div class="section-tag">// Community</div>
+      <h2 class="section-title">JOIN THE <span class="acc">COMMUNITY</span></h2>
+    </div>
+    <div class="community-band fi">
+      <div>
+        <h2 class="community-h">Everything happens<br>in the Discord.</h2>
+        <p class="community-p">Announcements, server rules, item sell lists, staff applications — if you're serious about Shade Network, the Discord is where you need to be.</p>
+        <div class="community-chips">
+          <span class="chip">Server Rules</span>
+          <span class="chip">Item Sell Lists</span>
+          <span class="chip">Staff Applications</span>
+          <span class="chip">Launch Announcements</span>
+        </div>
+      </div>
+      <a href="https://discord.gg/USsSyWtJ" target="_blank" class="discord-cta">
+        <svg viewBox="0 0 127.14 96.36" fill="currentColor">
+          <path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/>
+        </svg>
+        Join Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">SHADE NETWORK</div>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#gamemodes">Game Modes</a>
+      <a href="#join">How to Join</a>
+      <a href="https://discord.gg/USsSyWtJ" target="_blank">Discord</a>
+    </div>
+    <div class="footer-copy">© 2026 Shade Network — A Look'around Brand. Not affiliated with Mojang.</div>
+  </div>
+</footer>
+
+<!-- AI FAB -->
+<button class="ai-fab" id="aiFab" onclick="togglePanel()" aria-label="Ask ShadeBot">
+  <span class="fab-tip">Ask ShadeBot</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+
+<div class="ai-overlay" id="aiOverlay" onclick="togglePanel()"></div>
+
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-head">
+    <div class="ai-head-l">
+      <div class="ai-ava">🤖</div>
+      <div><div class="ai-name">ShadeBot</div><div class="ai-online">Online</div></div>
+    </div>
+    <button class="ai-x" onclick="togglePanel()">✕</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="msg ai">
+      <div class="msg-ava">🤖</div>
+      <div class="msg-bub">Hey! I'm ShadeBot — your guide to everything Shade Network. Ask me about game modes, launch dates, how to join, or anything else!</div>
+    </div>
+  </div>
+  <div class="ai-chips" id="aiChips">
+    <button class="ai-chip" onclick="sendQ('When does Shade SMP launch?')">SMP launch date?</button>
+    <button class="ai-chip" onclick="sendQ('How does the FFA tier system work?')">FFA tiers?</button>
+    <button class="ai-chip" onclick="sendQ('How do I make money on the server?')">Earn money?</button>
+    <button class="ai-chip" onclick="sendQ('What Minecraft versions can I join with?')">Versions?</button>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-inp" id="aiInp" type="text" placeholder="Ask anything about Shade Network..."
+      onkeydown="if(event.key==='Enter') sendMsg()" />
+    <button class="ai-go" onclick="sendMsg()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  function togglePanel() {
+    document.getElementById('aiPanel').classList.toggle('open');
+    document.getElementById('aiOverlay').classList.toggle('open');
+  }
+
+  async function sendMsg() {
+    const inp = document.getElementById('aiInp');
+    const q = inp.value.trim(); if (!q) return;
+    inp.value = '';
+    document.getElementById('aiChips').style.display = 'none';
+    addMsg(q, 'user');
+    const tid = addTyping();
+    try {
+      const r = await fetch('/api/shade', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({query:q}) });
+      const d = await r.json();
+      rmTyping(tid);
+      addMsg(d.answer || d.error || 'Something went wrong, try again.', 'ai', true);
+    } catch {
+      rmTyping(tid);
+      addMsg("Can't reach the server right now. Try again in a moment!", 'ai');
+    }
+  }
+
+  function sendQ(q) { document.getElementById('aiInp').value = q; sendMsg(); }
+
+  function addMsg(text, role, html=false) {
+    const c = document.getElementById('aiMsgs');
+    const d = document.createElement('div');
+    d.className = `msg ${role}`;
+    d.innerHTML = `<div class="msg-ava">${role==='ai'?'🤖':'👤'}</div><div class="msg-bub">${html?text:esc(text)}</div>`;
+    c.appendChild(d); c.scrollTop = c.scrollHeight;
+  }
+
+  function addTyping() {
+    const c = document.getElementById('aiMsgs');
+    const id = 'ty'+Date.now();
+    const d = document.createElement('div');
+    d.className='msg ai'; d.id=id;
+    d.innerHTML=`<div class="msg-ava">🤖</div><div class="msg-bub"><div class="typing"><span></span><span></span><span></span></div></div>`;
+    c.appendChild(d); c.scrollTop=c.scrollHeight; return id;
+  }
+
+  function rmTyping(id) { const e=document.getElementById(id); if(e) e.remove(); }
+  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function copyField(val, el) {
+    navigator.clipboard.writeText(val).then(()=>{
+      const b=el.querySelector('.copy-btn'); if(!b) return;
+      b.textContent='COPIED!'; b.style.color='var(--lime)';
+      setTimeout(()=>{b.textContent='COPY';b.style.color='';},1600);
+    });
+  }
+
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{ if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*70);obs.unobserve(e.target);} });
+  },{threshold:0.08});
+  document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

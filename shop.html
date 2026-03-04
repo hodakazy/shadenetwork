@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shade Network — Rank Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lime: #ffd800;
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #161616;
+      --bg4: #1e1e1e;
+      --border: rgba(255,216,0,0.1);
+      --border2: rgba(255,255,255,0.07);
+      --text: #efefef;
+      --muted: #777;
+      --muted2: #aaa;
+      --radius: 8px;
+      --max: 1160px;
+      --booster:    #ff73c3;
+      --elite:      #e91e63;
+      --shadow:     #7066ff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 2px; }
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 52px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 60px; background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max); margin: 0 auto; padding: 0 52px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; color: var(--lime); text-decoration: none; }
+    .nav-logo em { color: rgba(255,255,255,0.35); font-style: normal; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--lime); }
+    .nav-cta { background: var(--lime); color: #000; border: none; padding: 8px 20px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; cursor: pointer; text-decoration: none; transition: transform 0.15s, opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      padding: 140px 52px 80px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,216,0,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,216,0,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 80% 100% at 50% 0%, black 0%, transparent 80%);
+    }
+    .hero-glow {
+      position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 1000px; height: 500px;
+      background: radial-gradient(ellipse at center top, rgba(255,216,0,0.055) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .page-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,216,0,0.07); border: 1px solid rgba(255,216,0,0.2);
+      color: var(--lime); font-family: 'Space Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; padding: 6px 16px;
+      border-radius: 100px; margin-bottom: 28px;
+    }
+    .page-eyebrow::before { content: ''; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
+
+    .page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px, 10vw, 130px); line-height: 0.88; letter-spacing: 3px; }
+    .page-title .acc { color: var(--lime); display: block; }
+    .page-sub { margin: 22px auto 0; font-size: 16px; color: var(--muted2); line-height: 1.65; font-weight: 300; max-width: 520px; }
+
+    /* ── HOW IT WORKS STRIP ── */
+    .how-strip { padding: 0 0 72px; }
+    .how-inner {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    }
+    .how-step {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 0 32px 0 0;
+      border-right: 1px solid var(--border2);
+    }
+    .how-step:first-child { padding-left: 0; }
+    .how-step:last-child { border-right: none; padding-right: 0; padding-left: 32px; }
+    .how-step:nth-child(2) { padding-left: 32px; }
+    .how-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+      color: var(--lime); opacity: 0.4; line-height: 1; flex-shrink: 0;
+    }
+    .how-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .how-text p  { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── RANKS GRID ── */
+    .crates-section { padding-bottom: 100px; }
+    .crates-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; align-items: start;
+    }
+
+    /* ── RANK CARD ── */
+    .crate-card {
+      border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative; cursor: default;
+    }
+    .crate-card:hover { transform: translateY(-6px); }
+    .crate-card.booster:hover { border-color: rgba(255,115,195,0.45); box-shadow: 0 24px 60px rgba(255,115,195,0.1); }
+    .crate-card.elite:hover   { border-color: rgba(233,30,99,0.4);    box-shadow: 0 24px 60px rgba(233,30,99,0.1); }
+    .crate-card.shadow:hover  { border-color: rgba(112,102,255,0.45); box-shadow: 0 24px 60px rgba(112,102,255,0.12); }
+
+    /* top accent line */
+    .crate-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 3; }
+    .crate-card.booster::before { background: var(--booster); }
+    .crate-card.elite::before   { background: var(--elite); }
+    .crate-card.shadow::before  { background: var(--shadow); }
+
+    /* ── RANK VISUAL ── */
+    .crate-visual {
+      position: relative; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .crate-card.booster .crate-visual { background: linear-gradient(135deg, #1a0a14 0%, #120810 100%); }
+    .crate-card.elite .crate-visual   { background: linear-gradient(135deg, #1a0a10 0%, #120810 100%); }
+    .crate-card.shadow .crate-visual  { background: linear-gradient(135deg, #0e0c1e 0%, #0a0818 100%); }
+
+    .crate-visual::after {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px; border-radius: 50%; pointer-events: none;
+    }
+    .crate-card.booster .crate-visual::after { background: radial-gradient(circle, rgba(255,115,195,0.15) 0%, transparent 70%); }
+    .crate-card.elite .crate-visual::after   { background: radial-gradient(circle, rgba(233,30,99,0.15) 0%, transparent 70%); }
+    .crate-card.shadow .crate-visual::after  { background: radial-gradient(circle, rgba(112,102,255,0.18) 0%, transparent 70%); }
+
+    .crate-visual::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      pointer-events: none; z-index: 2; opacity: 0; transition: opacity 0.3s;
+    }
+    .crate-card:hover .crate-visual::before { opacity: 1; }
+    .crate-card.booster .crate-visual::before { background: linear-gradient(90deg, var(--booster), transparent); }
+    .crate-card.elite .crate-visual::before   { background: linear-gradient(90deg, var(--elite), transparent); }
+    .crate-card.shadow .crate-visual::before  { background: linear-gradient(90deg, var(--shadow), transparent); }
+
+    /* Rank icon */
+    .crate-icon {
+      position: relative; z-index: 3;
+      font-size: 72px; line-height: 1; user-select: none;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    .crate-card.booster .crate-icon { filter: drop-shadow(0 0 24px rgba(255,115,195,0.5)); }
+    .crate-card.elite .crate-icon   { filter: drop-shadow(0 0 24px rgba(233,30,99,0.45)); }
+    .crate-card.shadow .crate-icon  { filter: drop-shadow(0 0 28px rgba(112,102,255,0.55)); }
+    @keyframes iconFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    .crate-card:hover .crate-icon { animation: iconFloat 1.2s ease-in-out infinite; }
+
+    /* ── CARD BODY ── */
+    .crate-body { padding: 24px 26px 28px; }
+
+    .crate-tier {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      font-weight: 700; letter-spacing: 2px; padding: 4px 12px;
+      border-radius: 4px; margin-bottom: 14px; border: 1px solid;
+    }
+    .crate-card.booster .crate-tier { color: var(--booster); border-color: rgba(255,115,195,0.3); background: rgba(255,115,195,0.07); }
+    .crate-card.elite .crate-tier   { color: var(--elite);   border-color: rgba(233,30,99,0.3);   background: rgba(233,30,99,0.07); }
+    .crate-card.shadow .crate-tier  { color: var(--shadow);  border-color: rgba(112,102,255,0.3); background: rgba(112,102,255,0.07); }
+
+    .crate-name { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 2px; line-height: 1; margin-bottom: 4px; }
+    .crate-card.booster .crate-name { color: var(--booster); }
+    .crate-card.elite .crate-name   { color: var(--elite); }
+    .crate-card.shadow .crate-name  { color: var(--shadow); }
+
+    .crate-subtitle { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 18px; }
+
+    .crate-price { display: flex; align-items: baseline; gap: 5px; margin-bottom: 20px; }
+    .price-main { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--text); letter-spacing: 1px; line-height: 1; }
+    .price-sub  { font-size: 12px; color: var(--muted); }
+
+    .crate-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid var(--border2); }
+
+    /* ── PERKS ── */
+    .loot-title { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+
+    .loot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 24px; }
+    .loot-item {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 8px 10px;
+      font-size: 12px; color: var(--muted2);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .loot-item:hover { background: rgba(255,255,255,0.04); }
+    .loot-icon { font-size: 14px; flex-shrink: 0; }
+    .loot-rarity {
+      font-size: 9px; font-family: 'Space Mono', monospace;
+      border-radius: 3px; padding: 1px 5px; margin-left: auto; flex-shrink: 0;
+      letter-spacing: 0.5px; border: 1px solid;
+    }
+    .rarity-common   { color: #aaa;    border-color: rgba(170,170,170,0.2); background: rgba(170,170,170,0.07); }
+    .rarity-rare     { color: #60aaff; border-color: rgba(96,170,255,0.2);  background: rgba(96,170,255,0.07); }
+    .rarity-epic     { color: #b06aff; border-color: rgba(176,106,255,0.2); background: rgba(176,106,255,0.07); }
+    .rarity-legendary{ color: #ffb830; border-color: rgba(255,184,48,0.25); background: rgba(255,184,48,0.07); }
+
+    /* ── HOW TO GET ── */
+    .earn-row {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,216,0,0.05); border: 1px solid rgba(255,216,0,0.12);
+      border-radius: var(--radius); padding: 9px 12px;
+      font-size: 12px; color: var(--muted2); margin-bottom: 18px;
+    }
+    .earn-row span { color: var(--lime); font-weight: 600; }
+
+    /* Booster-exclusive badge */
+    .boost-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,115,195,0.07); border: 1px solid rgba(255,115,195,0.25);
+      border-radius: var(--radius); padding: 9px 12px;
+      font-size: 12px; color: #ff9dd8; margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    /* ── CTA ── */
+    .crate-btn {
+      display: block; width: 100%; padding: 13px; border: none;
+      border-radius: var(--radius); cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 14px; text-align: center;
+      text-decoration: none; transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+    }
+    .crate-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+    .crate-card.booster .crate-btn { background: var(--booster); color: #000; box-shadow: 0 4px 20px rgba(255,115,195,0.3); }
+    .crate-card.booster .crate-btn:hover { box-shadow: 0 8px 30px rgba(255,115,195,0.5); }
+    .crate-card.elite .crate-btn   { background: var(--elite); color: #fff; box-shadow: 0 4px 20px rgba(233,30,99,0.25); }
+    .crate-card.elite .crate-btn:hover { box-shadow: 0 8px 30px rgba(233,30,99,0.4); }
+    .crate-card.shadow .crate-btn  { background: var(--shadow); color: #fff; box-shadow: 0 4px 20px rgba(112,102,255,0.3); }
+    .crate-card.shadow .crate-btn:hover { box-shadow: 0 8px 30px rgba(112,102,255,0.5); }
+
+    .crate-note { margin-top: 10px; text-align: center; font-size: 11px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+    /* ── FAQ ── */
+    .faq-section { padding-bottom: 100px; }
+    .section-tag  { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--lime); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
+    .section-head { font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px,5vw,60px); letter-spacing: 1px; line-height: 0.95; text-align: center; margin-bottom: 48px; }
+    .section-head .acc { color: var(--lime); }
+
+    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .faq-card { background: var(--bg2); border: 1px solid var(--border2); border-radius: 12px; padding: 26px 24px; }
+    .faq-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .faq-card p  { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .faq-card a  { color: var(--lime); text-decoration: none; }
+    .faq-card a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 34px 0; }
+    .footer-inner { max-width: var(--max); margin: 0 auto; padding: 0 52px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 4px; color: var(--lime); }
+    .footer-links { display: flex; gap: 26px; }
+    .footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--lime); }
+    .footer-copy { font-size: 11px; color: var(--muted); }
+
+    /* ── AI FAB ── */
+    .ai-fab {
+      position: fixed; bottom: 28px; right: 28px; z-index: 600;
+      width: 52px; height: 52px; background: var(--lime); border: none;
+      border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 22px rgba(255,216,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fabIn 0.5s ease 0.8s both;
+    }
+    @keyframes fabIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    .ai-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(255,216,0,0.45); }
+    .ai-fab svg { width: 22px; height: 22px; color: #000; }
+    .fab-tip {
+      position: absolute; right: 62px; top: 50%;
+      transform: translateY(-50%) translateX(4px);
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-size: 12px; font-weight: 500;
+      padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .ai-fab:hover .fab-tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+    /* ── AI PANEL ── */
+    .ai-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px); z-index: 700;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .ai-overlay.open { opacity: 1; pointer-events: all; }
+    .ai-panel {
+      position: fixed; bottom: 0; right: 0; width: 420px; height: 600px;
+      background: var(--bg2); border-left: 1px solid rgba(255,216,0,0.15);
+      border-top: 1px solid rgba(255,216,0,0.15); border-radius: 16px 0 0 0;
+      z-index: 800; display: flex; flex-direction: column;
+      transform: translateY(110%); transition: transform 0.38s cubic-bezier(0.4,0,0.2,1); overflow: hidden;
+    }
+    .ai-panel.open { transform: translateY(0); }
+    .ai-head { padding: 15px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: var(--bg3); }
+    .ai-head-l { display: flex; align-items: center; gap: 10px; }
+    .ai-ava { width: 32px; height: 32px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .ai-name { font-size: 14px; font-weight: 600; }
+    .ai-online { font-size: 10px; color: var(--lime); font-family: 'Space Mono', monospace; display: flex; align-items: center; gap: 5px; }
+    .ai-online::before { content: ''; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite; display: inline-block; }
+    .ai-x { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px; transition: color 0.2s; }
+    .ai-x:hover { color: var(--text); }
+    .ai-msgs { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+    .ai-msgs::-webkit-scrollbar { width: 2px; }
+    .msg { display: flex; gap: 8px; max-width: 90%; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-ava { width: 26px; height: 26px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .msg.ai .msg-ava { background: rgba(255,216,0,0.12); }
+    .msg-bub { background: var(--bg4); border: 1px solid var(--border2); border-radius: 12px; padding: 10px 13px; font-size: 13px; line-height: 1.55; }
+    .msg.user .msg-bub { background: rgba(255,216,0,0.08); border-color: rgba(255,216,0,0.18); }
+    .typing { display: flex; gap: 4px; align-items: center; }
+    .typing span { width: 6px; height: 6px; background: var(--lime); border-radius: 50%; animation: tdot 1.2s infinite; display: inline-block; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes tdot { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-5px);opacity:1} }
+    .ai-chips { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+    .ai-chip { background: var(--bg3); border: 1px solid var(--border2); color: var(--muted); font-size: 11px; padding: 5px 10px; border-radius: 100px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.2s, border-color 0.2s; }
+    .ai-chip:hover { color: var(--lime); border-color: rgba(255,216,0,0.3); }
+    .ai-input-row { padding: 12px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-shrink: 0; background: var(--bg3); }
+    .ai-inp { flex: 1; background: var(--bg4); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 10px 13px; outline: none; transition: border-color 0.2s; }
+    .ai-inp:focus { border-color: rgba(255,216,0,0.35); }
+    .ai-inp::placeholder { color: var(--muted); }
+    .ai-go { width: 36px; height: 36px; background: var(--lime); border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.15s; }
+    .ai-go:hover { transform: scale(1.07); }
+    .ai-go svg { width: 15px; height: 15px; color: #000; }
+
+    /* ── SCROLL ANIM ── */
+    .fi { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fi.in { opacity: 1; transform: translateY(0); }
+    .fi-d1 { transition-delay: 0.07s; }
+    .fi-d2 { transition-delay: 0.14s; }
+    .fi-d3 { transition-delay: 0.21s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .crates-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+      .how-inner { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+      .how-step { border-right: none; border-bottom: 1px solid var(--border2); padding: 0 0 24px 0 !important; }
+      .how-step:last-child { border-bottom: none; padding-bottom: 0 !important; }
+      .faq-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .container, .nav-inner, .footer-inner { padding: 0 24px; }
+      .page-hero { padding: 120px 24px 56px; }
+      .nav-links { display: none; }
+      .footer-inner { flex-direction: column; gap: 14px; text-align: center; }
+      .footer-links { display: none; }
+      .ai-panel { width: 100%; border-radius: 16px 16px 0 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">SHADE<em>NET</em></a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#gamemodes">Game Modes</a></li>
+      <li><a href="index.html#join">How to Join</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="index.html#community">Community</a></li>
+    </ul>
+    <a href="https://discord.gg/USsSyWtJ" target="_blank" class="nav-cta">Join Discord</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content fi">
+    <div class="page-eyebrow">Shade Network — Rank Shop</div>
+    <h1 class="page-title">GET A<span class="acc">RANK</span></h1>
+    <p class="page-sub">Stand out on the server with an exclusive rank. Each rank comes with unique perks, cosmetics, and in-game privileges — the higher the rank, the more you unlock.</p>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="container">
+  <div class="how-strip">
+    <div class="how-inner fi">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-text">
+          <h4>Choose Your Rank</h4>
+          <p>Pick the rank that suits you. Booster is exclusive to Discord Server Boosters — Elite and Shadow can be purchased.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-text">
+          <h4>Claim It In-Game</h4>
+          <p>After boosting or purchasing, your rank is applied to your account and shows up on the server immediately.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-text">
+          <h4>Higher Rank = More Perks</h4>
+          <p>Booster ranks get the most exclusive benefits. Every rank unlocks cosmetics, privileges, and more.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANKS -->
+  <div class="crates-section">
+    <div class="crates-grid">
+
+      <!-- ELITE RANK (3rd best) -->
+      <div class="crate-card elite fi fi-d1">
+        <div class="crate-visual">
+          <div class="crate-icon">💎</div>
+        </div>
+        <div class="crate-body">
+          <div class="crate-tier">RANK — TIER 3</div>
+          <div class="crate-name">ELITE</div>
+          <div class="crate-subtitle">Entry-tier server rank</div>
+          <div class="crate-price">
+            <span class="price-main">$7.99</span>
+            <span class="price-sub">USD / one-time</span>
+          </div>
+          <p class="crate-desc">Kick off your Shade Network journey with the Elite rank. Gain a coloured prefix, access to exclusive channels, and in-game perks to get you ahead.</p>
+
+          <div class="earn-row">
+            🛒 <span>Purchase</span> directly via a Discord support ticket
+          </div>
+
+          <div class="loot-title">Rank Perks</div>
+          <div class="loot-grid">
+            <div class="loot-item"><span class="loot-icon">🏷️</span> Coloured Prefix <span class="loot-rarity rarity-rare">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">💬</span> Exclusive Channel <span class="loot-rarity rarity-rare">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">⚔️</span> Gear Bonus <span class="loot-rarity rarity-rare">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🎨</span> Elite Cosmetic <span class="loot-rarity rarity-epic">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">💰</span> Currency Bonus <span class="loot-rarity rarity-epic">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">✨</span> Rank Badge <span class="loot-rarity rarity-epic">PERK</span></div>
+          </div>
+
+          <a href="https://discord.gg/USsSyWtJ" target="_blank" class="crate-btn">Purchase — $7.99</a>
+          <div class="crate-note">open a ticket in Discord to purchase</div>
+        </div>
+      </div>
+
+      <!-- SHADOW RANK (2nd best) -->
+      <div class="crate-card shadow fi fi-d2">
+        <div class="crate-visual">
+          <div class="crate-icon">🔮</div>
+        </div>
+        <div class="crate-body">
+          <div class="crate-tier">RANK — TIER 2</div>
+          <div class="crate-name">SHADOW</div>
+          <div class="crate-subtitle">Mid-tier server rank</div>
+          <div class="crate-price">
+            <span class="price-main">$11.99</span>
+            <span class="price-sub">USD / one-time</span>
+          </div>
+          <p class="crate-desc">Step into the shadows with elevated perks. Shadow rank grants enhanced in-game privileges, exclusive cosmetics, and a presence that turns heads on the server.</p>
+
+          <div class="earn-row">
+            🛒 <span>Purchase</span> directly via a Discord support ticket
+          </div>
+
+          <div class="loot-title">Rank Perks</div>
+          <div class="loot-grid">
+            <div class="loot-item"><span class="loot-icon">🏷️</span> Shadow Prefix <span class="loot-rarity rarity-rare">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">💬</span> VIP Channel Access <span class="loot-rarity rarity-epic">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">💎</span> Diamond Gear Bonus <span class="loot-rarity rarity-epic">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🎨</span> Shadow Cosmetic <span class="loot-rarity rarity-epic">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">⚡</span> Exclusive Title <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🌟</span> Priority Support <span class="loot-rarity rarity-legendary">PERK</span></div>
+          </div>
+
+          <a href="https://discord.gg/USsSyWtJ" target="_blank" class="crate-btn">Purchase — $11.99</a>
+          <div class="crate-note">open a ticket in Discord to purchase</div>
+        </div>
+      </div>
+
+      <!-- BOOSTER RANK (best — Discord boost only) -->
+      <div class="crate-card booster fi fi-d3">
+        <div class="crate-visual">
+          <div class="crate-icon">🚀</div>
+        </div>
+        <div class="crate-body">
+          <div class="crate-tier">RANK — TIER 1 · EXCLUSIVE</div>
+          <div class="crate-name">BOOSTER</div>
+          <div class="crate-subtitle">Top-tier server rank</div>
+          <div class="crate-price">
+            <span class="price-main">FREE</span>
+            <span class="price-sub">with Discord boost</span>
+          </div>
+          <p class="crate-desc">The most prestigious rank on Shade Network, reserved exclusively for those who boost our Discord server. Highest perks, rarest cosmetics, and recognition above all others.</p>
+
+          <div class="boost-badge">
+            🩷 <span>Boost our Discord</span> to unlock this rank automatically
+          </div>
+
+          <div class="loot-title">Rank Perks</div>
+          <div class="loot-grid">
+            <div class="loot-item"><span class="loot-icon">👑</span> Booster Crown Prefix <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">💬</span> All Exclusive Channels <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🎨</span> Unique Cosmetic Set <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">⚡</span> Max Gear Perks <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🌟</span> Exclusive Title <span class="loot-rarity rarity-legendary">PERK</span></div>
+            <div class="loot-item"><span class="loot-icon">🏆</span> Server Recognition <span class="loot-rarity rarity-legendary">PERK</span></div>
+          </div>
+
+          <a href="https://discord.gg/USsSyWtJ" target="_blank" class="crate-btn">Boost Discord to Unlock</a>
+          <div class="crate-note">only obtainable by boosting the server</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="fi">
+      <div class="section-tag">// Good to Know</div>
+      <h2 class="section-head">BEFORE YOU <span class="acc">BUY</span></h2>
+    </div>
+    <div class="faq-grid fi">
+      <div class="faq-card">
+        <h4>🏅 How do I get a rank?</h4>
+        <p>Elite and Shadow ranks can be purchased by joining the <a href="https://discord.gg/USsSyWtJ" target="_blank">Discord</a> and opening a support ticket. The Booster rank is obtained exclusively by boosting the Discord server.</p>
+      </div>
+      <div class="faq-card">
+        <h4>🩷 How do I get the Booster rank?</h4>
+        <p>The Booster rank is only available to members who boost the Shade Network Discord server. Once you boost, your rank will be applied automatically. It cannot be purchased.</p>
+      </div>
+      <div class="faq-card">
+        <h4>⚡ When does my rank activate?</h4>
+        <p>Ranks are applied to your account shortly after purchase or boosting. If your rank hasn't been applied within 24 hours, open a support ticket in Discord and it'll be resolved promptly.</p>
+      </div>
+      <div class="faq-card">
+        <h4>💳 How do I purchase a rank?</h4>
+        <p>Join the <a href="https://discord.gg/USsSyWtJ" target="_blank">Discord</a> and open a support ticket. hodakazy (founder) will handle your purchase directly and activate your rank.</p>
+      </div>
+      <div class="faq-card">
+        <h4>🔒 Are purchases refundable?</h4>
+        <p>All rank purchases are final. If your rank wasn't applied after purchase, contact the founder via a Discord ticket and it will be resolved promptly.</p>
+      </div>
+      <div class="faq-card">
+        <h4>🗓️ Do ranks expire?</h4>
+        <p>Purchased ranks (Elite & Shadow) are permanent — they stay on your account indefinitely. The Booster rank is active for as long as your Discord server boost remains active.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">SHADE NETWORK</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#gamemodes">Game Modes</a>
+      <a href="index.html#join">How to Join</a>
+      <a href="https://discord.gg/USsSyWtJ" target="_blank">Discord</a>
+    </div>
+    <div class="footer-copy">© 2026 Shade Network — A Look'around Brand. Not affiliated with Mojang.</div>
+  </div>
+</footer>
+
+<!-- extra styles for support chat -->
+<style>
+  .ai-unread-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--red, #ef4444); color: #fff;
+    font-size: 9px; font-weight: 700; font-family: 'Space Mono', monospace;
+    width: 17px; height: 17px; border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+    border: 2px solid var(--bg);
+  }
+  .ai-fab { position: relative; }
+
+  /* name gate */
+  .name-gate {
+    padding: 32px 20px; display: flex; flex-direction: column; gap: 14px;
+    align-items: center; text-align: center;
+  }
+  .name-gate-icon { font-size: 36px; }
+  .name-gate h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+  .name-gate p  { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 240px; }
+  .name-inp {
+    width: 100%; background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    padding: 10px 13px; outline: none; transition: border-color 0.2s;
+  }
+  .name-inp:focus { border-color: rgba(255,216,0,0.4); }
+  .name-btn {
+    width: 100%; padding: 11px; background: var(--lime); color: #000;
+    border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .name-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* offline notice */
+  .offline-notice {
+    margin: 0 16px 12px; padding: 9px 13px;
+    background: rgba(255,216,0,0.05); border: 1px solid rgba(255,216,0,0.15);
+    border-radius: var(--radius); font-size: 11px; color: var(--muted2);
+    font-family: 'Space Mono', monospace; text-align: center; line-height: 1.6;
+  }
+  .offline-notice span { color: var(--lime); }
+</style>
+
+<!-- SUPPORT FAB -->
+<button class="ai-fab" onclick="togglePanel()" aria-label="Support Chat">
+  <span class="fab-tip">Support Chat</span>
+  <div class="ai-unread-badge" id="fabBadge"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+
+<div class="ai-overlay" id="aiOverlay" onclick="togglePanel()"></div>
+
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-head">
+    <div class="ai-head-l">
+      <div class="ai-ava">🛡️</div>
+      <div>
+        <div class="ai-name">Shade Support</div>
+        <div class="ai-online" id="supportStatus">Connecting...</div>
+      </div>
+    </div>
+    <button class="ai-x" onclick="togglePanel()">✕</button>
+  </div>
+
+  <!-- Name gate (shown before session starts) -->
+  <div class="name-gate" id="nameGate">
+    <div class="name-gate-icon">👋</div>
+    <h3>Get Support</h3>
+    <p>Enter your Minecraft username and a staff member will assist you shortly.</p>
+    <input class="name-inp" id="usernameInp" type="text" maxlength="24"
+      placeholder="Your Minecraft username"
+      onkeydown="if(event.key==='Enter') startChat()" />
+    <button class="name-btn" onclick="startChat()">Start Chat</button>
+  </div>
+
+  <!-- Chat (hidden until session started) -->
+  <div id="chatArea" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+    <div class="ai-msgs" id="aiMsgs"></div>
+    <div class="offline-notice" id="offlineNotice" style="display:none">
+      <span>Staff may be offline.</span> Your message is saved — we'll reply soon!
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-inp" id="aiInp" type="text" placeholder="Type a message..."
+        onkeydown="if(event.key==='Enter') sendMsg()" />
+      <button class="ai-go" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, set, get, serverTimestamp, onDisconnect }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ── CONFIG — replace with your Firebase project config ──
+  const firebaseConfig = {
+    apiKey: "REPLACE_WITH_YOUR_API_KEY",
+    authDomain: "REPLACE_WITH_YOUR_AUTH_DOMAIN",
+    databaseURL: "REPLACE_WITH_YOUR_DATABASE_URL",
+    projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
+    storageBucket: "REPLACE_WITH_YOUR_STORAGE_BUCKET",
+    messagingSenderId: "REPLACE_WITH_YOUR_MESSAGING_SENDER_ID",
+    appId: "REPLACE_WITH_YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  let sessionId = null;
+  let username  = null;
+
+  // Restore session from localStorage
+  const savedSid = localStorage.getItem('shade_sid');
+  const savedUser = localStorage.getItem('shade_user');
+
+  // ── TOGGLE PANEL ──
+  window.togglePanel = function() {
+    document.getElementById('aiPanel').classList.toggle('open');
+    document.getElementById('aiOverlay').classList.toggle('open');
+    // Clear unread badge when opening
+    if (document.getElementById('aiPanel').classList.contains('open') && sessionId) {
+      set(ref(db, `sessions/${sessionId}/unreadUser`), 0);
+      hideBadge();
+    }
+  };
+
+  // ── START CHAT ──
+  window.startChat = async function() {
+    const inp = document.getElementById('usernameInp');
+    const name = inp.value.trim();
+    if (!name) { inp.focus(); return; }
+    username = name;
+    localStorage.setItem('shade_user', name);
+    await createSession(name);
+  };
+
+  async function createSession(name) {
+    const sessRef = ref(db, 'sessions');
+    const newRef = push(sessRef);
+    sessionId = newRef.key;
+    localStorage.setItem('shade_sid', sessionId);
+
+    await set(newRef, {
+      username: name,
+      status: 'open',
+      online: true,
+      lastMsg: '',
+      lastTs: Date.now(),
+      unreadStaff: 0,
+      unreadUser: 0,
+    });
+
+    // Mark offline on disconnect
+    onDisconnect(ref(db, `sessions/${sessionId}/online`)).set(false);
+
+    // First system message
+    await push(ref(db, `sessions/${sessionId}/messages`), {
+      role: 'system', text: `${name} started a support chat.`, ts: Date.now()
+    });
+
+    activateChat();
+  }
+
+  async function resumeSession(sid, user) {
+    sessionId = sid;
+    username = user;
+    // Confirm session still exists
+    const snap = await get(ref(db, `sessions/${sid}`));
+    if (!snap.exists()) {
+      localStorage.removeItem('shade_sid');
+      localStorage.removeItem('shade_user');
+      return;
+    }
+    // Mark back online
+    set(ref(db, `sessions/${sid}/online`), true);
+    onDisconnect(ref(db, `sessions/${sessionId}/online`)).set(false);
+    activateChat();
+  }
+
+  function activateChat() {
+    document.getElementById('nameGate').style.display = 'none';
+    const ca = document.getElementById('chatArea');
+    ca.style.display = 'flex';
+
+    // Listen to messages
+    onValue(ref(db, `sessions/${sessionId}/messages`), snap => {
+      renderMessages(snap.val() || {});
+    });
+
+    // Listen to session status & unread
+    onValue(ref(db, `sessions/${sessionId}`), snap => {
+      const d = snap.val();
+      if (!d) return;
+
+      // Status line
+      const el = document.getElementById('supportStatus');
+      if (d.status === 'closed') {
+        el.textContent = 'Chat closed';
+        document.getElementById('aiInp').disabled = true;
+        document.querySelector('.ai-go').disabled = true;
+      } else {
+        el.textContent = 'Staff support';
+      }
+
+      // Offline notice: show if no staff activity in >5 min (heuristic)
+      // We just always show it after chat opens as a soft message
+      document.getElementById('offlineNotice').style.display = 'block';
+
+      // Unread badge (only when panel is closed)
+      const unread = d.unreadUser || 0;
+      if (!document.getElementById('aiPanel').classList.contains('open') && unread > 0) {
+        showBadge(unread);
+      } else if (unread > 0 && document.getElementById('aiPanel').classList.contains('open')) {
+        set(ref(db, `sessions/${sessionId}/unreadUser`), 0);
+      }
+    });
+  }
+
+  function renderMessages(msgs) {
+    const container = document.getElementById('aiMsgs');
+    const keys = Object.keys(msgs).sort((a,b) => (msgs[a].ts||0)-(msgs[b].ts||0));
+    const wasAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+    container.innerHTML = '';
+    keys.forEach(k => {
+      const m = msgs[k];
+      if (m.role === 'system') {
+        const d = document.createElement('div');
+        d.className = 'msg system';
+        d.style.cssText = 'align-self:center;max-width:90%;';
+        d.innerHTML = `<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:5px 14px;font-size:11px;color:#666;font-family:Space Mono,monospace;text-align:center">${esc(m.text)}</div>`;
+        container.appendChild(d);
+        return;
+      }
+      const isStaff = m.role === 'staff';
+      const d = document.createElement('div');
+      d.className = `msg ${isStaff ? 'ai' : 'user'}`;
+      d.innerHTML = `<div class="msg-ava">${isStaff ? '🛡️' : '👤'}</div><div class="msg-bub">${esc(m.text)}</div>`;
+      container.appendChild(d);
+    });
+    if (wasAtBottom) container.scrollTop = container.scrollHeight;
+  }
+
+  window.sendMsg = async function() {
+    const inp = document.getElementById('aiInp');
+    const text = inp.value.trim(); if (!text) return;
+    inp.value = '';
+
+    await push(ref(db, `sessions/${sessionId}/messages`), {
+      role: 'user', username, text, ts: Date.now()
+    });
+    await set(ref(db, `sessions/${sessionId}/lastMsg`), text);
+    await set(ref(db, `sessions/${sessionId}/lastTs`), Date.now());
+
+    // Increment staff unread
+    const snap = await get(ref(db, `sessions/${sessionId}/unreadStaff`));
+    await set(ref(db, `sessions/${sessionId}/unreadStaff`), (snap.val() || 0) + 1);
+  };
+
+  function showBadge(n) {
+    const b = document.getElementById('fabBadge');
+    b.textContent = n > 9 ? '9+' : n;
+    b.style.display = 'flex';
+  }
+  function hideBadge() {
+    document.getElementById('fabBadge').style.display = 'none';
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Resume or show name gate
+  if (savedSid && savedUser) {
+    resumeSession(savedSid, savedUser);
+  }
+</script>
+
+<script>
+  // ── SCROLL ANIM ──
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e,i) => { if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('in'),i*70); obs.unobserve(e.target); } });
+  }, {threshold:0.07});
+  document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
