@@ -8,13 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
-      --lime: #ffd800;
+      --lime: #8b5cf6;
       --lime-dim: #c8d94e;
       --bg: #080808;
       --bg2: #0f0f0f;
       --bg3: #161616;
       --bg4: #1e1e1e;
-      --border: rgba(255,216,0,0.1);
+      --border: rgba(139,92,246,0.1);
       --border2: rgba(255,255,255,0.07);
       --text: #efefef;
       --muted: #777;
@@ -67,33 +67,43 @@
     .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
 
     /* ── HERO ── */
+    #home::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(8,8,8,0.6);
+      z-index: 0; pointer-events: none;
+    }
     #home {
       min-height: 100vh;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center; position: relative; overflow: hidden;
       padding: 120px 52px 80px;
+      background-image: url('homebg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .hero-grid {
       position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,216,0,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,216,0,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,0.03) 1px, transparent 1px);
       background-size: 80px 80px;
       mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 20%, transparent 100%);
+      background-color: rgba(8,8,8,0.55);
     }
     .hero-glow {
       position: absolute; top: 40%; left: 50%;
       transform: translate(-50%, -50%);
       width: 1000px; height: 700px;
-      background: radial-gradient(ellipse at center, rgba(255,216,0,0.065) 0%, transparent 65%);
+      background: radial-gradient(ellipse at center, rgba(139,92,246,0.065) 0%, transparent 65%);
       pointer-events: none;
     }
     .hero-content { position: relative; z-index: 1; max-width: 900px; width: 100%; }
 
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,216,0,0.07); border: 1px solid rgba(255,216,0,0.2);
+      background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.2);
       color: var(--lime); font-family: 'Space Mono', monospace;
       font-size: 10px; letter-spacing: 2px; padding: 6px 16px;
       border-radius: 100px; margin-bottom: 36px;
@@ -128,7 +138,7 @@
       cursor: pointer; text-decoration: none; display: inline-block;
       transition: transform 0.15s, box-shadow 0.2s;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,216,0,0.22); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(139,92,246,0.22); }
     .btn-ghost {
       background: transparent; color: var(--muted2);
       border: 1px solid var(--border2); padding: 13px 30px;
@@ -137,7 +147,7 @@
       text-decoration: none; display: inline-block;
       transition: border-color 0.2s, color 0.2s;
     }
-    .btn-ghost:hover { border-color: rgba(255,216,0,0.4); color: var(--lime); }
+    .btn-ghost:hover { border-color: rgba(139,92,246,0.4); color: var(--lime); }
 
     .hero-stats {
       margin-top: 64px; display: flex; justify-content: center;
@@ -180,8 +190,8 @@
     }
     .about-tile:hover::after { opacity: 1; }
     .tile-icon {
-      width: 38px; height: 38px; background: rgba(255,216,0,0.1);
-      border: 1px solid rgba(255,216,0,0.18); border-radius: 10px;
+      width: 38px; height: 38px; background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.18); border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 17px; margin-bottom: 18px;
     }
@@ -200,11 +210,11 @@
       border-radius: 16px; padding: 48px 44px; position: relative; overflow: hidden;
       transition: border-color 0.3s, transform 0.25s;
     }
-    .mode-card:hover { border-color: rgba(255,216,0,0.22); transform: translateY(-4px); }
+    .mode-card:hover { border-color: rgba(139,92,246,0.22); transform: translateY(-4px); }
     .mode-card::after {
       content: ''; position: absolute; bottom: -60px; right: -60px;
       width: 220px; height: 220px;
-      background: radial-gradient(circle, rgba(255,216,0,0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%);
       pointer-events: none;
     }
     .mode-status {
@@ -213,7 +223,7 @@
       letter-spacing: 1.5px; padding: 5px 12px; border-radius: 100px;
       margin-bottom: 28px; border: 1px solid;
     }
-    .mode-status.live { color: var(--lime); border-color: rgba(255,216,0,0.25); background: rgba(255,216,0,0.06); }
+    .mode-status.live { color: var(--lime); border-color: rgba(139,92,246,0.25); background: rgba(139,92,246,0.06); }
     .mode-status.live::before { content: ''; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; animation: pulse 1.6s infinite; }
     .mode-status.soon { color: var(--muted); border-color: var(--border2); background: rgba(255,255,255,0.025); }
 
@@ -250,7 +260,7 @@
       padding: 28px 0; border-bottom: 1px solid var(--border);
     }
     .step-row:last-child { border-bottom: none; }
-    .step-n { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: rgba(255,216,0,0.13); line-height: 1; }
+    .step-n { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: rgba(139,92,246,0.13); line-height: 1; }
     .step-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
     .step-body p { font-size: 13px; color: var(--muted); line-height: 1.7; }
     .step-body code { color: var(--lime); font-family: 'Space Mono', monospace; font-size: 12px; }
@@ -267,7 +277,7 @@
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 9px; cursor: pointer; transition: border-color 0.2s;
     }
-    .sfield:hover { border-color: rgba(255,216,0,0.3); }
+    .sfield:hover { border-color: rgba(139,92,246,0.3); }
     .sfield-label { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; letter-spacing: 1px; margin-bottom: 4px; }
     .sfield-val { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--lime); }
     .sfield-val.neutral { color: var(--muted2); }
@@ -306,7 +316,7 @@
     .community-band::after {
       content: ''; position: absolute; right: -80px; top: -80px;
       width: 380px; height: 380px;
-      background: radial-gradient(circle, rgba(255,216,0,0.04) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%);
       pointer-events: none;
     }
     .community-h {
@@ -382,8 +392,9 @@
       <li><a href="#join">How to Join</a></li>
       <li><a href="#community">Community</a></li>
       <li><a href="shop.html" style="color:var(--lime);">Shop</a></li>
+
     </ul>
-    <button class="nav-cta" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">Join Now</button>
+    <a href="https://discord.gg/USsSyWtJ" target="_blank" class="nav-cta">Join Discord</a>
   </div>
 </nav>
 
@@ -403,8 +414,8 @@
     <div class="hero-stats">
       <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Game Modes</div></div>
       <div class="hstat"><div class="hstat-n">1.21</div><div class="hstat-l">MC Version</div></div>
-      <div class="hstat"><div class="hstat-n">MAR '26</div><div class="hstat-l">SMP Launch</div></div>
-      <div class="hstat"><div class="hstat-n">JUN '26</div><div class="hstat-l">FFA Launch</div></div>
+      <div class="hstat"><div class="hstat-n">MAR '26</div><div class="hstat-l">Lifesteal Launch</div></div>
+      <div class="hstat"><div class="hstat-n">JUN '26</div><div class="hstat-l">Economy Launch</div></div>
     </div>
   </div>
 </section>
@@ -435,7 +446,7 @@
         <ul>
           <li>No land claiming or TPA features</li>
           <li>Real consequences for every decision</li>
-          <li>New SMP chapter every 1–2 months</li>
+          <li>New Lifesteal chapter every 1–2 months</li>
         </ul>
       </div>
       <div class="about-tile">
@@ -458,34 +469,35 @@
     <div class="section-header fi">
       <div class="section-tag">// Game Modes</div>
       <h2 class="section-title">TWO MODES. <span class="acc">ONE WORLD.</span></h2>
+
       <p class="section-lead">Each mode is built from scratch for a different playstyle. Pick your lane.</p>
     </div>
     <div class="modes-grid">
       <div class="mode-card fi">
         <div class="mode-status live">Coming next month!</div>
-        <div class="mode-name">SHADE <span>SMP</span></div>
-        <div class="mode-type">Semi-Vanilla Survival</div>
-        <p class="mode-desc">Build, trade, and hunt in a living world with a player-driven economy, bounty system, and rotating chapter seasons that add new content every few months.</p>
+        <div class="mode-name">SHADE <span>LIFESTEAL</span></div>
+        <div class="mode-type">Lifesteal SMP</div>
+        <p class="mode-desc">Every kill steals a heart from your enemy and adds it to your own. Die and lose a heart permanently. The last player standing wins — survive or be erased.</p>
         <div class="mode-features">
-          <div class="mf"><span class="mf-dot"></span>Shop with Food, Gear &amp; Utility categories</div>
-          <div class="mf"><span class="mf-dot"></span>Player bounty system — set targets, collect rewards</div>
-          <div class="mf"><span class="mf-dot"></span>New chapter every 1–2 months with added items</div>
-          <div class="mf"><span class="mf-dot"></span>Earn currency selling items or bounty hunting</div>
+          <div class="mf"><span class="mf-dot"></span>Kill players to steal their hearts</div>
+          <div class="mf"><span class="mf-dot"></span>Lose a heart permanently on death</div>
+          <div class="mf"><span class="mf-dot"></span>Craft hearts to restore lost health</div>
+          <div class="mf"><span class="mf-dot"></span>Eliminated at 0 hearts — no respawning</div>
           <div class="mf"><span class="mf-dot"></span>No land claiming — defend your own base</div>
         </div>
         <div class="mode-launch">31st March 2026</div>
       </div>
       <div class="mode-card fi">
         <div class="mode-status soon">Launching Early June 2026</div>
-        <div class="mode-name">SHADE <span>FFA</span></div>
-        <div class="mode-type">Free-For-All Combat</div>
-        <p class="mode-desc">Drop into a live pit of fighters. Every kill upgrades your gear tier. Every death costs you one. High risk, high reward — pure, unfiltered PvP.</p>
+        <div class="mode-name">SHADE <span>ECONOMY</span></div>
+        <div class="mode-type">Player-Driven Economy</div>
+        <p class="mode-desc">Build, trade, and hustle in a living world with a player-driven economy, bounty system, and rotating chapter seasons that add new content every few months.</p>
         <div class="mode-features">
-          <div class="mf"><span class="mf-dot"></span>Dynamic gear tier — +1 per kill, −1 per death</div>
-          <div class="mf"><span class="mf-dot"></span>Die and respawn at spawn with downgraded gear</div>
-          <div class="mf"><span class="mf-dot"></span><code style="color:var(--lime);font-size:11px">/spawn</code> after 5s out of combat to leave safely</div>
-          <div class="mf"><span class="mf-dot"></span>Reset gear to your current tier at spawn anytime</div>
-          <div class="mf"><span class="mf-dot"></span>Drop in and fight — no setup, no waiting</div>
+          <div class="mf"><span class="mf-dot"></span>Shop with Food, Gear &amp; Utility categories</div>
+          <div class="mf"><span class="mf-dot"></span>Player bounty system — set targets, collect rewards</div>
+          <div class="mf"><span class="mf-dot"></span>New chapter every 1–2 months with added items</div>
+          <div class="mf"><span class="mf-dot"></span>Earn currency selling items or bounty hunting</div>
+          <div class="mf"><span class="mf-dot"></span>Drop in and trade — no setup, no waiting</div>
         </div>
         <div class="mode-launch">June 2026</div>
       </div>
